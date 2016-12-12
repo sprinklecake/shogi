@@ -45,8 +45,37 @@ $(document).ready(function() {
 		img_size: [2*115, 8*144],
 		img_src: "img/shogi-pieces-1.png",
 		pieces: {
-			p: [0, 7*144]
+			B: [0, 2*144],
+			G: [0, 3*144],
+			K: [0, 0*144],
+			L: [0, 6*144],
+			N: [0, 5*144],
+			P: [0, 7*144],
+			R: [0, 1*144],
+			S: [0, 4*144]
 		}
+	};
+	var START_POSITION = {
+		P1: ["P", 7, 1],
+		P2: ["P", 7, 2],
+		P3: ["P", 7, 3],
+		P4: ["P", 7, 4],
+		P5: ["P", 7, 5],
+		P6: ["P", 7, 6],
+		P7: ["P", 7, 7],
+		P8: ["P", 7, 8],
+		P9: ["P", 7, 9],
+		B:  ["B", 8, 2],
+		R:  ["R", 8, 8],
+		L1: ["L", 9, 1],
+		N2: ["N", 9, 2],
+		S3: ["S", 9, 3],
+		G4: ["G", 9, 4],
+		K:  ["K", 9, 5],
+		G6: ["G", 9, 6],
+		S7: ["S", 9, 7],
+		N8: ["N", 9, 8],
+		L9: ["L", 9, 9]
 	};
 	function add_piece(piece_name, piece_id, square) {
 		var width_ratio = square.width() / sheet_map.piece_size[0];
@@ -70,10 +99,17 @@ $(document).ready(function() {
 			+ 'px;"></div>'
 		);
 		console.log("asdffsd");
+	};
+	function get_square(row, column) {
+		var index = ((row-1) * 9 + column);
+		return $(".squares li:nth-child(" + index + ")");
+	};
+	function display_position(position) {
+		Object.keys(position).forEach(function(k) {
+			var data = position[k];
+			add_piece(data[0], k, get_square(data[1], data[2]));
+    	});
 	}
-	for (var i=0; i < 9; ++i) {
-		add_piece('p', 'p' + (i+1), 
-			$(".squares li:nth-child(" + (6*9 + i + 1) + ")"));
-	}
+	display_position(START_POSITION);	
 });
 
