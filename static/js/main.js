@@ -113,9 +113,7 @@ $(document).ready(function() {
 			+ (sheet_map.piece_size[0] * ratio)
 			+ 'px; min-height: '
 			+ (sheet_map.piece_size[1] * ratio)
-			+ 'px;" draggable="'
-			+ (owner == "my" ? "true" : "false")
-			+ '"><img src="'
+			+ 'px;" draggable="false"><img src="'
 			+ sheet_map.img_src
 			+ '" style="left: '
 			+ (-sheet_map.pieces[piece_type][0] * ratio)
@@ -125,23 +123,6 @@ $(document).ready(function() {
 			+ (sheet_map.img_size[0] * ratio)
 			+ 'px;" draggable="false"></div>'
 		);
-		/* this awful hack is probably not portable lol */
-		$("#" + piece_id).on("dragstart", function(ev) {
-			var dt = ev.originalEvent.dataTransfer;
-			dt.setData("text/plain", 
-				ev.target.id 
-				+ " " 
-				+ ev.target.dataset.pieceType 
-			);
-			if (dt.setDragImage) {
-				dt.setDragImage(ev.target, 
-					(sheet_map.pieces[piece_type][0] 
-						+ sheet_map.piece_size[0] / 2) * ratio,
-					(sheet_map.pieces[piece_type][1]
-						+ sheet_map.piece_size[1] / 2) * ratio
-				);
-			}
-		});
 	};
 	function get_square(row, column) {
 		var index = ((row-1) * 9 + column);
@@ -155,10 +136,37 @@ $(document).ready(function() {
 	}
 	display_position(START_POSITION);
 	$(".squares li")
-		.on("dragover", false)
-		.on("drop", function(ev) {
+	.attr({draggable: true})
+	.on("dragover", false)
+	.on("dragstart", function(ev) {
+		var doms = $(this).find(".my.piece");
+		if (!doms) {
+			event.preventDefault();
+			event.stopPropagation();
+			return;
+		}
+		var dom = doms[0];
+		var dt = ev.originalEvent.dataTransfer;
+		
+		console.log(dom);	
+		dt.setData("text/plain", 
+			dom.id 
+			+ " " 
+			+ dom.dataset.pieceType 
+		);
+		if (false && dt.setDragImage) {
+			dt.setDragImage(dom, 
+				(sheet_map.pieces[piece_type][0] 
+					+ sheet_map.piece_size[0] / 2) * ratio,
+				(sheet_map.pieces[piece_type][1]
+					+ sheet_map.piece_size[1] / 2) * ratio
+			);
+		}
+	})
+	.on("drop", function(ev) {
 		var dt = ev.originalEvent.dataTransfer;
 		var data = dt.getData("text/plain").split(" ");
+		console.log(data);
 		put_piece(data[0], data[1], "my", $(this));
 	});
 });
