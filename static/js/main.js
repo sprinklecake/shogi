@@ -107,11 +107,15 @@ $(document).ready(function() {
 			+ owner
 			+ ' piece" id="'
 			+ piece_id
+			+ '" data-piece-type="'
+			+ piece_type
 			+ '" style="min-width: ' 
 			+ (sheet_map.piece_size[0] * ratio)
 			+ 'px; min-height: '
 			+ (sheet_map.piece_size[1] * ratio)
-			+ 'px;"><img src="'
+			+ 'px;" draggable="'
+			+ (owner == "my" ? "true" : "false")
+			+ '"><img src="'
 			+ sheet_map.img_src
 			+ '" style="left: '
 			+ (-sheet_map.pieces[piece_type][0] * ratio)
@@ -119,8 +123,25 @@ $(document).ready(function() {
 			+ (-sheet_map.pieces[piece_type][1] * ratio)
 			+ 'px; max-width: '
 			+ (sheet_map.img_size[0] * ratio)
-			+ 'px;"></div>'
+			+ 'px;" draggable="false"></div>'
 		);
+		/* this awful hack is probably not portable lol */
+		$("#" + piece_id).on("dragstart", function(ev) {
+			var dt = ev.originalEvent.dataTransfer;
+			dt.setData("text/plain", 
+				ev.target.id 
+				+ " " 
+				+ ev.target.dataset.pieceType 
+			);
+			if (dt.setDragImage) {
+				dt.setDragImage(ev.target, 
+					(sheet_map.pieces[piece_type][0] 
+						+ sheet_map.piece_size[0] / 2) * ratio,
+					(sheet_map.pieces[piece_type][1]
+						+ sheet_map.piece_size[1] / 2) * ratio
+				);
+			}
+		});
 	};
 	function get_square(row, column) {
 		var index = ((row-1) * 9 + column);
@@ -132,6 +153,13 @@ $(document).ready(function() {
 			put_piece(k, data[0], data[3], get_square(data[1], data[2]));
     	});
 	}
-	display_position(START_POSITION);	
+	display_position(START_POSITION);
+	$(".squares li")
+		.on("dragover", false)
+		.on("drop", function(ev) {
+		var dt = ev.originalEvent.dataTransfer;
+		var data = dt.getData("text/plain").split(" ");
+		put_piece(data[0], data[1], "my", $(this));
+	});
 });
 

@@ -129,6 +129,7 @@ textarea {
 }
 
 .my.piece {
+	transform: rotate(0deg);
 }
 
 .their.piece {
