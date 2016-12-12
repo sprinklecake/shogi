@@ -124,7 +124,15 @@ textarea {
 .piece {
 	overflow: hidden;
 	position: relative;
+	transform-origin: 50% 50%;
 	/* must set width & height with js */
+}
+
+.my.piece {
+}
+
+.their.piece {
+	transform: rotate(180deg);
 }
 
 .piece img {
