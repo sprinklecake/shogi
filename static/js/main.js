@@ -42,8 +42,11 @@ Plan:
 $(document).ready(function() {
 	var sheet_map = {
 		piece_size: [115, 144],
-		img_size: [2*115, 8*144],
-		img_src: "img/shogi-pieces-1.png",
+		pieces_size: [2*115, 8*144],
+		pieces_src: "img/shogi-pieces-1.png",
+		board_size: [1122, 1122],
+		board_margins: [42, 42, 42, 42],
+		board_src: "img/shogi-board-1.png",
 		pieces: {
 			B: [0, 2*144],
 			G: [0, 3*144],
@@ -97,6 +100,33 @@ $(document).ready(function() {
 		TN8: ["N", 1, 8, "their"],
 		TL9: ["L", 1, 9, "their"],
 	};
+
+	function draw_board() {
+		$(".board")
+		.addClass("with-background")
+		.css("background-image", "url(\"" + sheet_map.board_src + "\")");
+		var padding_arr = sheet_map.board_margins.map(function(margin) {
+			return margin + "px";
+		});
+		$(".squares").css("padding", padding_arr.join(" "));
+		var ptop = parseInt($(".squares").css("padding-top"), 10);
+		var pright = parseInt($(".squares").css("padding-right"), 10);
+		var pbottom = parseInt($(".squares").css("padding-bottom"), 10);
+		var pleft = parseInt($(".squares").css("padding-left"), 10);
+		var board_width = sheet_map.board_size[0] - pleft - pright;
+		var board_height = sheet_map.board_size[1] - ptop - pbottom;
+		var square_width = board_width / 9;
+		var square_height = board_height / 9;
+		$(".squares")
+		.css("width", board_width + "px")
+		.css("background", "none");
+		$(".squares > li")
+		.css("line-height", square_height + "px")
+		.css("height", square_height + "px")
+		.css("width", square_width + "px")
+		.css("background", "none");
+	}
+
 	function put_piece(piece_id, piece_type, owner, square) {
 		var width_ratio = square.width() / sheet_map.piece_size[0];
 		var height_ratio = square.height() / sheet_map.piece_size[1];
@@ -114,13 +144,13 @@ $(document).ready(function() {
 			+ 'px; min-height: '
 			+ (sheet_map.piece_size[1] * ratio)
 			+ 'px;" draggable="false"><img src="'
-			+ sheet_map.img_src
+			+ sheet_map.pieces_src
 			+ '" style="left: '
 			+ (-sheet_map.pieces[piece_type][0] * ratio)
 			+ 'px; top: '
 			+ (-sheet_map.pieces[piece_type][1] * ratio)
 			+ 'px; max-width: '
-			+ (sheet_map.img_size[0] * ratio)
+			+ (sheet_map.pieces_size[0] * ratio)
 			+ 'px;" draggable="false"></div>'
 		);
 	};
@@ -134,6 +164,7 @@ $(document).ready(function() {
 			put_piece(k, data[0], data[3], get_square(data[1], data[2]));
     	});
 	}
+	draw_board();
 	display_position(START_POSITION);
 	$(".squares li")
 	.attr({draggable: true})

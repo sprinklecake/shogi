@@ -122,6 +122,11 @@ textarea {
     background: #DDF;
 }
 
+.board.with-background > .squares > li {
+	background: none;
+	
+}
+
 .piece {
 	overflow: hidden;
 	position: relative;
