@@ -104,7 +104,9 @@ $(document).ready(function() {
 	function draw_board() {
 		$(".board")
 		.addClass("with-background")
-		.css("background-image", "url(\"" + sheet_map.board_src + "\")");
+		.css("background-image", "url(\"" + sheet_map.board_src + "\")")
+		.css("width", sheet_map.board_size[0] + "px")
+		.css("height", sheet_map.board_size[1] + "px");
 		var padding_arr = sheet_map.board_margins.map(function(margin) {
 			return margin + "px";
 		});
@@ -119,11 +121,9 @@ $(document).ready(function() {
 		var square_height = board_height / 9;
 		$(".squares")
 		.css("width", board_width + "px")
+		.css("height", board_height + "px")
 		.css("background", "none");
 		$(".squares > li")
-		.css("line-height", square_height + "px")
-		.css("height", square_height + "px")
-		.css("width", square_width + "px")
 		.css("background", "none");
 	}
 
