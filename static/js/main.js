@@ -103,14 +103,35 @@ $(document).ready(function() {
 
 	function draw_board() {
 		$(".board")
-		.addClass("with-background")
-		.css("background-image", "url(\"" + sheet_map.board_src + "\")")
-		.css("width", sheet_map.board_size[0] + "px")
-		.css("height", sheet_map.board_size[1] + "px");
-		var padding_arr = sheet_map.board_margins.map(function(margin) {
-			return margin + "px";
-		});
-		$(".squares").css("padding", padding_arr.join(" "));
+		.addClass("with-background");
+		var ml = sheet_map.board_margins.length;
+		var inner_size = [
+			sheet_map.board_size[0]
+			- sheet_map.board_margins[1 % ml]
+			- sheet_map.board_margins[3 % ml],
+			sheet_map.board_size[1]
+			- sheet_map.board_margins[0 % ml]
+			- sheet_map.board_margins[2 % ml]
+		];
+		var margins = sheet_map.board_margins;
+		var ml = margins.length;
+		var ph = sheet_map.board_size[0] *1.0/ inner_size[0] - 1;
+		var pv = sheet_map.board_size[1] *1.0/ inner_size[1] - 1;
+		var pt = margins[0 % ml] * pv 
+			/ (margins[0 % ml] + margins[2 % ml]);
+		var pr = margins[1 % ml] * ph
+			/ (margins[1 % ml] + margins[3 % ml]);
+		var pb = pv - pt;
+		var pl = ph - pr;
+		console.log([ph, pv, pt, pr, pb, pl]);
+		var p_arr = [
+			pt*100+"%", pr*100+"%", pb*100+"%", pl*100+"%"
+		];
+		console.log(inner_size);
+		$(".squares")
+			.css("background-image", "url(\"" + sheet_map.board_src + "\")")
+			.css("background-size", "100% 100%")
+			.css("padding", p_arr.join(" "));
 		var ptop = parseInt($(".squares").css("padding-top"), 10);
 		var pright = parseInt($(".squares").css("padding-right"), 10);
 		var pbottom = parseInt($(".squares").css("padding-bottom"), 10);
@@ -120,9 +141,8 @@ $(document).ready(function() {
 		var square_width = board_width / 9;
 		var square_height = board_height / 9;
 		$(".squares")
-		.css("width", board_width + "px")
-		.css("height", board_height + "px")
-		.css("background", "none");
+		.css("width", (1-ph) *100+"%")
+		.css("height", (1-pv) * 100+"%");
 		$(".squares > li")
 		.css("background", "none");
 	}
